@@ -1,0 +1,9 @@
+{
+    "region": "eu-west-1",
+    "ecsClusterName": "ITpaCSsionateecs",
+    "serviceName": "viaplaytest",
+    "dockerImage": "518606020119.dkr.ecr.eu-west-1.amazonaws.com/itpacssionate-pyappimage:v0.5",
+    "keyNames": ["Nodes", "Bastion"],
+    "repositoryName": "itpacssionate-pyappimage",
+    "tags": {"TagOne": "ValueOne", "TagTwo": "ValueTwo"}
+}

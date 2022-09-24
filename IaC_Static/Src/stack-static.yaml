@@ -1,0 +1,536 @@
+Resources:
+  1aInstancestatic:
+    Properties:
+      IamInstanceProfile: !Ref 'EC2InstanceProfilestatic'
+      ImageId: ami-0e592a261c043bc6a
+      InstanceType: t2.micro
+      KeyName: Nodesstatic
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      SubnetId: !Ref 'PrivateSubnet1astatic'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      UserData: !Base64
+        Fn::Join:
+          - ''
+          - - "#!/bin/bash\necho ECS_CLUSTER="
+            - !Ref 'ITpaCSsionateecs'
+            - ' >> /etc/ecs/ecs.config'
+    Type: AWS::EC2::Instance
+  1artassocstatic:
+    Properties:
+      RouteTableId: !Ref 'routeTablestatic'
+      SubnetId: !Ref 'PrivateSubnet1astatic'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  1bInstancestatic:
+    Properties:
+      IamInstanceProfile: !Ref 'EC2InstanceProfilestatic'
+      ImageId: ami-0e592a261c043bc6a
+      InstanceType: t2.micro
+      KeyName: Nodesstatic
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      SubnetId: !Ref 'PrivateSubnet1bstatic'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      UserData: !Base64
+        Fn::Join:
+          - ''
+          - - "#!/bin/bash\necho ECS_CLUSTER="
+            - !Ref 'ITpaCSsionateecs'
+            - ' >> /etc/ecs/ecs.config'
+    Type: AWS::EC2::Instance
+  1brtassocstatic:
+    Properties:
+      RouteTableId: !Ref 'routeTablestatic'
+      SubnetId: !Ref 'PrivateSubnet1bstatic'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  1crtassocstatic:
+    Properties:
+      RouteTableId: !Ref 'routeTablestatic'
+      SubnetId: !Ref 'PrivateSubnet1cstatic'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  APPtgstatic:
+    Properties:
+      HealthCheckIntervalSeconds: '30'
+      HealthCheckPath: /healthz
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: '10'
+      HealthyThresholdCount: '4'
+      Matcher:
+        HttpCode: '200'
+      Name: APPtgstatic
+      Port: '80'
+      Protocol: HTTP
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      Targets:
+        - Id: !Ref '1aInstancestatic'
+          Port: '8080'
+        - Id: !Ref '1bInstancestatic'
+          Port: '8080'
+      UnhealthyThresholdCount: '3'
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  Administration1astatic:
+    Properties:
+      AvailabilityZone: eu-west-1a
+      CidrBlock: 10.0.192.0/19
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::Subnet
+  Administration1bstatic:
+    Properties:
+      AvailabilityZone: eu-west-1b
+      CidrBlock: 10.0.224.0/19
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::Subnet
+  AllowHTTPstatic:
+    Properties:
+      GroupDescription: AllowHTTP
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      SecurityGroupIngress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '80'
+          IpProtocol: tcp
+          ToPort: '80'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::SecurityGroup
+  Bastionstatic:
+    Properties:
+      KeyName: Bastionstatic
+      KeyType: rsa
+      PublicKeyMaterial: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5VLGnDC2tcbPaaPMXZAV8pbReIl/YwTU7ot9O2aG/YBsYLEt46a1goXUvRiOqQMjYnkrIoAZjLL6EsnoBY9vxy0GpMJuB45WsS26+2WmQx3St3UHqJ91JYN7ct4JCIwhIyiEVxnzgsrRMqzFrMal2TeFnODutY3ftjQG5PsmmqZ1zaMBtoy7wLmWTWfOe1n4pviGT77r2/wgD3LPf4soE8mSpJApm2uKrvTLKm4eyFIpnAGlLuATDXlCaNCv6NzO8qobSNLQcNRFx2PnvH1d0NuC/pTAExrOHglGkLsxxQz3j3M31wZRep408rn7CmCRsTHLroOWltBUlQmDgiWAjCCrjfS94qyxMOfZQELxua4ZmsQN2oR0j1EOtynstwKbKz/CYlVj0iitPbWq425kvLHDWgDfLbOSbrjNCg4V8MC0Euy/7ClOVPBpCtZFnGpsxA9gCL/Y2jQs1+eQqZU4NJfvLR+VmBF4uhyLQvOaZ0OWA5f083OIL8Dl/VDt3m8k=\
+        \ kubernetesfan@kubePC\n"
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::EC2::KeyPair
+  EC2InstanceProfilestatic:
+    Properties:
+      Path: /
+      Roles:
+        - !Ref 'EcsClusterRolestatic'
+    Type: AWS::IAM::InstanceProfile
+  EcsClusterRolestatic:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Path: /
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::IAM::Role
+  IGWstatic:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::EC2::InternetGateway
+  ITpaCSsionateecs:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::ECS::Cluster
+  ListenerRulestatic:
+    Properties:
+      Actions:
+        - TargetGroupArn: !Ref 'APPtgstatic'
+          Type: forward
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /*
+      ListenerArn: !Ref 'Listenerstatic'
+      Priority: '1'
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  Listenerstatic:
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'APPtgstatic'
+          Type: forward
+      LoadBalancerArn: !Ref 'ViaPlayAssignmentLBstatic'
+      Port: '80'
+      Protocol: HTTP
+    Type: AWS::ElasticLoadBalancingV2::Listener
+  MyServicestatic:
+    Properties:
+      Cluster: !Ref 'ITpaCSsionateecs'
+      DesiredCount: 2
+      LaunchType: EC2
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      TaskDefinition: !Ref 'taskDefinitionstatic'
+    Type: AWS::ECS::Service
+  Nodesstatic:
+    Properties:
+      KeyName: Nodesstatic
+      KeyType: rsa
+      PublicKeyMaterial: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjpN5W2RW9UQFO1G7mPV9ziwG7zI2AXcnZKzqmBndQseo7H4EqAJodNmSvfPUryCePlPkSwdYF2ADav+AQmD6q6kx4b/6ZGxY9b4prso8vt3yGgBAlEAepWvT+sAQ8DnqmLmq2cc29DG1KlHWRxf2pVOPmiWYNsGzB13cgVOEDGmKrnGlC5+odWyAge5RYB2WBlJ4f6XDWyKIEiVYR9sKqODMbyc61F8Cxb9xvLbqI21U43uoRgM8HHUgeXO37JuTYAXvrhEhcij/HO/O31ZRVwugCg8zYSGno2nXOrKwrLGZ8xNHbKtDwEHbpZIRDvjkzNcFOA6BcsMUJY/i49BJbMYqeXbuERbxam9sB6iBbJlE0lnoHpxCr1gEZMkow1D1aI557LewAEigNmxenTpQE3MEQAIyBAlep/EK7C+o5qDc8Zh1W1qXK+nHsLZjBwCfRCLtv3H6OcCbdzMaM1pSzpHJvsf/8sDnQ+XN7wm8PKi55yGWWvI99/N02RPusm/8=\
+        \ kubernetesfan@kubePC\n"
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::EC2::KeyPair
+  PolicyEcrstatic:
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:BatchGetImage
+              - ecr:GetDownloadUrlForLayer
+              - ecr:GetAuthorizationToken
+            Effect: Allow
+            Resource: '*'
+        Version: '2012-10-17'
+      PolicyName: EcrPolicy
+      Roles:
+        - !Ref 'EcsClusterRolestatic'
+    Type: AWS::IAM::Policy
+  PolicyEcsstatic:
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecs:CreateCluster
+              - ecs:RegisterContainerInstance
+              - ecs:DeregisterContainerInstance
+              - ecs:DiscoverPollEndpoint
+              - ecs:Submit*
+              - ecs:Poll
+              - ecs:StartTelemetrySession
+            Effect: Allow
+            Resource: '*'
+        Version: '2012-10-17'
+      PolicyName: EcsPolicy
+      Roles:
+        - !Ref 'EcsClusterRolestatic'
+    Type: AWS::IAM::Policy
+  PrivateSubnet1astatic:
+    Properties:
+      AvailabilityZone: eu-west-1a
+      CidrBlock: 10.0.0.0/18
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::Subnet
+  PrivateSubnet1bstatic:
+    Properties:
+      AvailabilityZone: eu-west-1b
+      CidrBlock: 10.0.64.0/18
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::Subnet
+  PrivateSubnet1cstatic:
+    Properties:
+      AvailabilityZone: eu-west-1c
+      CidrBlock: 10.0.128.0/18
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::Subnet
+  RTadministrationstatic:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::RouteTable
+  S3static:
+    Properties:
+      RouteTableIds:
+        - !Ref 'RTadministrationstatic'
+        - !Ref 'routeTablestatic'
+      ServiceName: com.amazonaws.eu-west-1.s3
+      VpcEndpointType: Gateway
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCEndpoint
+  ViaPlayAssignmentLBstatic:
+    Properties:
+      Name: ViaPlayAssignmentstatic
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref 'AllowHTTPstatic'
+      Subnets:
+        - !Ref 'Administration1astatic'
+        - !Ref 'Administration1bstatic'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  ViaPlayTeststatic:
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::EC2::VPC
+  adminrtassoc1astatic:
+    Properties:
+      RouteTableId: !Ref 'RTadministrationstatic'
+      SubnetId: !Ref 'Administration1astatic'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  adminrtassoc1bstatic:
+    Properties:
+      RouteTableId: !Ref 'RTadministrationstatic'
+      SubnetId: !Ref 'Administration1bstatic'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  bastionInstanceEIPAssociationstatic:
+    Properties:
+      EIP: !Ref 'bastionInstanceEIPstatic'
+      InstanceId: !Ref 'bastionInstancestatic'
+    Type: AWS::EC2::EIPAssociation
+  bastionInstanceEIPstatic:
+    Properties:
+      InstanceId: !Ref 'bastionInstancestatic'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::EC2::EIP
+  bastionInstanceSGstatic:
+    Properties:
+      GroupDescription: sg for nat gw instance
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      SecurityGroupIngress:
+        - CidrIp: 10.0.0.0/16
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: 10.0.0.0/16
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '22'
+          IpProtocol: tcp
+          ToPort: '22'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::SecurityGroup
+  bastionInstancestatic:
+    Properties:
+      ImageId: ami-096800910c1b781ba
+      InstanceType: t2.micro
+      KeyName: Bastionstatic
+      SecurityGroupIds:
+        - !GetAtt 'bastionInstanceSGstatic.GroupId'
+      SubnetId: !Ref 'Administration1astatic'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::EC2::Instance
+  ecrApistatic:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecr.api
+      SubnetIds:
+        - !Ref 'PrivateSubnet1astatic'
+        - !Ref 'PrivateSubnet1bstatic'
+        - !Ref 'PrivateSubnet1cstatic'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCEndpoint
+  ecrDkrstatic:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecr.dkr
+      SubnetIds:
+        - !Ref 'PrivateSubnet1astatic'
+        - !Ref 'PrivateSubnet1bstatic'
+        - !Ref 'PrivateSubnet1cstatic'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCEndpoint
+  ecsAgentstatic:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecs-agent
+      SubnetIds:
+        - !Ref 'PrivateSubnet1astatic'
+        - !Ref 'PrivateSubnet1bstatic'
+        - !Ref 'PrivateSubnet1cstatic'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCEndpoint
+  ecsTelemetrystatic:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecs-telemetry
+      SubnetIds:
+        - !Ref 'PrivateSubnet1astatic'
+        - !Ref 'PrivateSubnet1bstatic'
+        - !Ref 'PrivateSubnet1cstatic'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCEndpoint
+  ecsstatic:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSGstatic.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecs
+      SubnetIds:
+        - !Ref 'PrivateSubnet1astatic'
+        - !Ref 'PrivateSubnet1bstatic'
+        - !Ref 'PrivateSubnet1cstatic'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCEndpoint
+  generalSGstatic:
+    Properties:
+      GroupDescription: allows everything in the private subnet
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      SecurityGroupIngress:
+        - CidrIp: 10.0.0.0/16
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: 10.0.0.0/16
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::SecurityGroup
+  igwAstatic:
+    Properties:
+      InternetGatewayId: !Ref 'IGWstatic'
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::VPCGatewayAttachment
+  routeAdministrationstatic:
+    Properties:
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref 'IGWstatic'
+      RouteTableId: !Ref 'RTadministrationstatic'
+    Type: AWS::EC2::Route
+  routeTablestatic:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+      VpcId: !Ref 'ViaPlayTeststatic'
+    Type: AWS::EC2::RouteTable
+  taskDefinitionstatic:
+    Properties:
+      ContainerDefinitions:
+        - Image: 518606020119.dkr.ecr.eu-west-1.amazonaws.com/itpacssionate-pyappimage:v0.5
+          Name: pyApp
+      Cpu: '256'
+      Memory: '512'
+      NetworkMode: host
+      Tags:
+        - Key: TagOne
+          Value: ValueOneStatic
+        - Key: TagTwo
+          Value: ValueTwoStatic
+    Type: AWS::ECS::TaskDefinition
+

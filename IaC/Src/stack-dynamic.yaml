@@ -1,0 +1,562 @@
+Resources:
+  1artassoc:
+    Properties:
+      RouteTableId: !Ref 'routeTable'
+      SubnetId: !Ref 'PrivateSubnet1a'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  1brtassoc:
+    Properties:
+      RouteTableId: !Ref 'routeTable'
+      SubnetId: !Ref 'PrivateSubnet1b'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  1crtassoc:
+    Properties:
+      RouteTableId: !Ref 'routeTable'
+      SubnetId: !Ref 'PrivateSubnet1c'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  APPtg:
+    Properties:
+      HealthCheckIntervalSeconds: '30'
+      HealthCheckPath: /healthz
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: '10'
+      HealthyThresholdCount: '4'
+      Matcher:
+        HttpCode: '200'
+      Name: APPtg
+      Port: '80'
+      Protocol: HTTP
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      UnhealthyThresholdCount: '3'
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  Administration1a:
+    Properties:
+      AvailabilityZone: eu-west-1a
+      CidrBlock: 10.2.192.0/19
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::Subnet
+  Administration1b:
+    Properties:
+      AvailabilityZone: eu-west-1b
+      CidrBlock: 10.2.224.0/19
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::Subnet
+  AllowHTTP:
+    Properties:
+      GroupDescription: AllowHTTP
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      SecurityGroupIngress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '80'
+          IpProtocol: tcp
+          ToPort: '80'
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::SecurityGroup
+  AutoScalingGroup:
+    Properties:
+      AutoScalingGroupName: ECSInstances
+      AvailabilityZones:
+        - eu-west-1a
+        - eu-west-1b
+      DesiredCapacity: '2'
+      LaunchConfigurationName: !Ref 'InstanceTemplate'
+      MaxSize: '3'
+      MinSize: '2'
+      Tags:
+        - Key: TagOne
+          PropagateAtLaunch: true
+          Value: ValueOne
+        - Key: TagTwo
+          PropagateAtLaunch: true
+          Value: ValueTwo
+      VPCZoneIdentifier:
+        - !Ref 'PrivateSubnet1a'
+        - !Ref 'PrivateSubnet1b'
+    Type: AWS::AutoScaling::AutoScalingGroup
+  Bastion:
+    Properties:
+      KeyName: Bastion
+      KeyType: rsa
+      PublicKeyMaterial: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDl/p1r+nzszHTw0qhqZFW3xgf9IuLO/rPtzsnynVBW4kVDTwrb1TRcwupV/oIqWI0NWCCkr4suiAehEbtChwChqtXkLoxTu1b0JG+3Wrf5CC6zd2JqREyIXIZ6FvWYLb5koZgtmv7SzbOp6jdvLArfZrZ//6XchoBbO10UV/h6VUUCdQkpehPPZ6TjXs+LjccQi331YH05Hz9xr85fIqbBKS8w2K0uVOv+uNviQIF++O/KZ7X5IEQTBMQmvZuWB2W+LBpaYPgNa7B6k7DRGdHoqKfuTevqJGX8jPQ4qSFP/sLmkxIkacZdK+086dxGY66vvJVs7VNnGmqyWMl2jk74/N31F0HaJZLC0zYFX4/ZhGZ7c63MTh2EQda3PsG3rL9991d1kRe11sIQ1dDHR6lwDmQXB/zQPtXFAsGK0pGFOmU5OpYyi087TeIIikQElk1Wzug08TPDh46AT65riYK6A9+SC5VhsL95dEdsLpmAx1U5k6oEJEmSceeP2BsxGr0=\
+        \ kubernetesfan@kubePC\n"
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::EC2::KeyPair
+  EC2InstanceProfile:
+    Properties:
+      Path: /
+      Roles:
+        - !Ref 'EcsClusterRole'
+    Type: AWS::IAM::InstanceProfile
+  EcsClusterRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Path: /
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::IAM::Role
+  IGW:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::EC2::InternetGateway
+  ITpaCSsionateecs:
+    Properties:
+      ClusterName: ITpaCSsionateecs
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::ECS::Cluster
+  InstanceTemplate:
+    Properties:
+      IamInstanceProfile: !Ref 'EC2InstanceProfile'
+      ImageId: ami-0e592a261c043bc6a
+      InstanceType: t2.micro
+      KeyName: Nodes
+      SecurityGroups:
+        - !Ref 'generalSG'
+      UserData: !Base64
+        Fn::Join:
+          - ''
+          - - "#!/bin/bash\necho ECS_CLUSTER="
+            - !Ref 'ITpaCSsionateecs'
+            - ' >> /etc/ecs/ecs.config'
+    Type: AWS::AutoScaling::LaunchConfiguration
+  Listener:
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'APPtg'
+          Type: forward
+      LoadBalancerArn: !Ref 'ViaPlayAssignmentLB'
+      Port: '80'
+      Protocol: HTTP
+    Type: AWS::ElasticLoadBalancingV2::Listener
+  ListenerRule:
+    Properties:
+      Actions:
+        - TargetGroupArn: !Ref 'APPtg'
+          Type: forward
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /*
+      ListenerArn: !Ref 'Listener'
+      Priority: '1'
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  MyService:
+    DependsOn: Listener
+    Properties:
+      Cluster: !Ref 'ITpaCSsionateecs'
+      DesiredCount: 2
+      LaunchType: EC2
+      LoadBalancers:
+        - ContainerName: pyApp
+          ContainerPort: 8080
+          TargetGroupArn: !Ref 'APPtg'
+      ServiceName: viaplaytest
+      Tags:
+        - Key: toBeAutoscaled
+          Value: 'yes'
+      TaskDefinition: !Ref 'taskDefinition'
+    Type: AWS::ECS::Service
+  Nodes:
+    Properties:
+      KeyName: Nodes
+      KeyType: rsa
+      PublicKeyMaterial: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCkWZN/nxjQ/YCwGdSHN6GHesbFXd8NyZeZ0a6FEOGfpxwOiuK6C1sFgQfVZpc6jrwswvFpOrShnsgAwSvCEMel5fdAowY81hSoADvIAuaLlFywknew5U2sgjCbanNl7rS0f56uX+seMHZcrXE/8Jkiy7CoWkXQYrUEdBOV0bq/FgUWoiiwsqiwu714qlLrw5kzG2txw/4tQXe5ZyqTa0lIQiS7fWF3LJSAULNTk9BAHDQvmD3MnVkfgIbQ2tkG8Gw/x0AV0MYDgpbcPQTn+/AaEkU7Z5ojqG07yDz0NW0v18l2Skq9aCN4lDQGsszMp3s3TgH0UCPXlFtmtY+IWUkpSpwsz6IHBDHFOo+l2gLhrXwntqpP2UcMCBS3sgxSASL14C0gUV5XTLTPe1gvqQhq8C2LW2wwMRoiVfSGq+Gmf8t4P4lQxnMzhLpaCLdutM1k9lAHY6XSbNPWbjEvS9XtZmWdvqinbZ2/eN9Uo2SwtRrjVBs64ELSTGNfK7/pul0=\
+        \ kubernetesfan@kubePC\n"
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::EC2::KeyPair
+  PolicyEcr:
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:BatchGetImage
+              - ecr:GetDownloadUrlForLayer
+              - ecr:GetAuthorizationToken
+            Effect: Allow
+            Resource: '*'
+        Version: '2012-10-17'
+      PolicyName: EcrPolicy
+      Roles:
+        - !Ref 'EcsClusterRole'
+    Type: AWS::IAM::Policy
+  PolicyEcs:
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecs:CreateCluster
+              - ecs:RegisterContainerInstance
+              - ecs:DeregisterContainerInstance
+              - ecs:DiscoverPollEndpoint
+              - ecs:Submit*
+              - ecs:Poll
+              - ecs:StartTelemetrySession
+            Effect: Allow
+            Resource: '*'
+        Version: '2012-10-17'
+      PolicyName: EcsPolicy
+      Roles:
+        - !Ref 'EcsClusterRole'
+    Type: AWS::IAM::Policy
+  PrivateSubnet1a:
+    Properties:
+      AvailabilityZone: eu-west-1a
+      CidrBlock: 10.2.0.0/18
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::Subnet
+  PrivateSubnet1b:
+    Properties:
+      AvailabilityZone: eu-west-1b
+      CidrBlock: 10.2.64.0/18
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::Subnet
+  PrivateSubnet1c:
+    Properties:
+      AvailabilityZone: eu-west-1c
+      CidrBlock: 10.2.128.0/18
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::Subnet
+  RTadministration:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::RouteTable
+  S3:
+    Properties:
+      RouteTableIds:
+        - !Ref 'RTadministration'
+        - !Ref 'routeTable'
+      ServiceName: com.amazonaws.eu-west-1.s3
+      VpcEndpointType: Gateway
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCEndpoint
+  ViaPlayAssignmentLB:
+    Properties:
+      Name: ViaPlayAssignment
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref 'AllowHTTP'
+      Subnets:
+        - !Ref 'Administration1a'
+        - !Ref 'Administration1b'
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  ViaPlayTest:
+    Properties:
+      CidrBlock: 10.2.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::EC2::VPC
+  adminrtassoc1a:
+    Properties:
+      RouteTableId: !Ref 'RTadministration'
+      SubnetId: !Ref 'Administration1a'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  adminrtassoc1b:
+    Properties:
+      RouteTableId: !Ref 'RTadministration'
+      SubnetId: !Ref 'Administration1b'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  autoscalingplan:
+    DependsOn: MyService
+    Properties:
+      ApplicationSource:
+        TagFilters:
+          - Key: ToBeAutoscaled
+            Values:
+              - 'yes'
+      ScalingInstructions:
+        - MaxCapacity: 4
+          MinCapacity: 2
+          ResourceId: service/ITpaCSsionateecs/viaplaytest
+          ScalableDimension: ecs:service:DesiredCount
+          ServiceNamespace: ecs
+          TargetTrackingConfigurations:
+            - PredefinedScalingMetricSpecification:
+                PredefinedScalingMetricType: ECSServiceAverageCPUUtilization
+              TargetValue: 60
+    Type: AWS::AutoScalingPlans::ScalingPlan
+  bastionInstance:
+    Properties:
+      ImageId: ami-096800910c1b781ba
+      InstanceType: t2.micro
+      KeyName: Bastion
+      SecurityGroupIds:
+        - !GetAtt 'bastionInstanceSG.GroupId'
+      SubnetId: !Ref 'Administration1a'
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::EC2::Instance
+  bastionInstanceEIP:
+    Properties:
+      InstanceId: !Ref 'bastionInstance'
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::EC2::EIP
+  bastionInstanceEIPAssociation:
+    Properties:
+      EIP: !Ref 'bastionInstanceEIP'
+      InstanceId: !Ref 'bastionInstance'
+    Type: AWS::EC2::EIPAssociation
+  bastionInstanceSG:
+    Properties:
+      GroupDescription: sg for nat gw instance
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      SecurityGroupIngress:
+        - CidrIp: 10.2.0.0/16
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: 10.2.0.0/16
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '22'
+          IpProtocol: tcp
+          ToPort: '22'
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::SecurityGroup
+  ecrApi:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSG.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecr.api
+      SubnetIds:
+        - !Ref 'PrivateSubnet1a'
+        - !Ref 'PrivateSubnet1b'
+        - !Ref 'PrivateSubnet1c'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCEndpoint
+  ecrDkr:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSG.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecr.dkr
+      SubnetIds:
+        - !Ref 'PrivateSubnet1a'
+        - !Ref 'PrivateSubnet1b'
+        - !Ref 'PrivateSubnet1c'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCEndpoint
+  ecs:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSG.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecs
+      SubnetIds:
+        - !Ref 'PrivateSubnet1a'
+        - !Ref 'PrivateSubnet1b'
+        - !Ref 'PrivateSubnet1c'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCEndpoint
+  ecsAgent:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSG.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecs-agent
+      SubnetIds:
+        - !Ref 'PrivateSubnet1a'
+        - !Ref 'PrivateSubnet1b'
+        - !Ref 'PrivateSubnet1c'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCEndpoint
+  ecsTelemetry:
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !GetAtt 'generalSG.GroupId'
+      ServiceName: com.amazonaws.eu-west-1.ecs-telemetry
+      SubnetIds:
+        - !Ref 'PrivateSubnet1a'
+        - !Ref 'PrivateSubnet1b'
+        - !Ref 'PrivateSubnet1c'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCEndpoint
+  generalSG:
+    Properties:
+      GroupDescription: allows everything in the private subnet
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      SecurityGroupIngress:
+        - CidrIp: 10.2.0.0/16
+          FromPort: '0'
+          IpProtocol: tcp
+          ToPort: '65535'
+        - CidrIp: 10.2.0.0/16
+          FromPort: '0'
+          IpProtocol: udp
+          ToPort: '65535'
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::SecurityGroup
+  igwA:
+    Properties:
+      InternetGatewayId: !Ref 'IGW'
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::VPCGatewayAttachment
+  routeAdministration:
+    Properties:
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref 'IGW'
+      RouteTableId: !Ref 'RTadministration'
+    Type: AWS::EC2::Route
+  routeTable:
+    Properties:
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+      VpcId: !Ref 'ViaPlayTest'
+    Type: AWS::EC2::RouteTable
+  scalingPolicy:
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref 'AutoScalingGroup'
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: 60
+    Type: AWS::AutoScaling::ScalingPolicy
+  taskDefinition:
+    Properties:
+      ContainerDefinitions:
+        - Image: 518606020119.dkr.ecr.eu-west-1.amazonaws.com/itpacssionate-pyappimage:v0.5
+          Name: pyApp
+          PortMappings:
+            - ContainerPort: 8080
+              Protocol: tcp
+      Cpu: '256'
+      Memory: '512'
+      NetworkMode: bridge
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::ECS::TaskDefinition
+

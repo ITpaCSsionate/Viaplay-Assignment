@@ -1,0 +1,11 @@
+Resources:
+  MyRepository:
+    Properties:
+      RepositoryName: itpacssionate-pyappimage
+      Tags:
+        - Key: TagOne
+          Value: ValueOne
+        - Key: TagTwo
+          Value: ValueTwo
+    Type: AWS::ECR::Repository
+
