@@ -1,7 +1,7 @@
 # Where can I access the app?
 **"Dynamic" setup -> [HERE](http://viaplayassignment-1452398108.eu-west-1.elb.amazonaws.com/hello)**
 
-**Static setup -> [HERE](ViaPlayAssignmentstatic-134299611.eu-west-1.elb.amazonaws.com/hello)**
+**Static setup -> [HERE](http://ViaPlayAssignmentstatic-134299611.eu-west-1.elb.amazonaws.com/hello)**
 
 
 # App
