@@ -1,4 +1,4 @@
-**THE APP HAS BEEN SHUT DOWN FOR COSTS AFTER THE INTERVIEW**
+**THE APP HAS BEEN SHUT DOWN (STACK REMOVED) FOR COSTS AFTER THE INTERVIEW**
 # Where can I access the app?
 **"Dynamic" setup -> [HERE](http://viaplayassignment-1452398108.eu-west-1.elb.amazonaws.com/hello)**
 
